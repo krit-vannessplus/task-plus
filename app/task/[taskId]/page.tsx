@@ -1,6 +1,5 @@
 "use client";
 
-import { use } from "react";
 import { useState, useEffect } from "react";
 import { TaskCard } from "@/components/taskCard";
 import { EditTaskCard } from "@/components/editTaskCard";
@@ -14,12 +13,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const GAS_URL = process.env.NEXT_PUBLIC_GAS_URL!;
 
-export default function TaskPage({
-  params,
-}: {
-  params: Promise<{ taskId: string }>;
-}) {
-  const { taskId } = use(params);
+export default function TaskPage({ params }: { params: { taskId: string } }) {
+  const { taskId } = params;
   const [isEditing, setIsEditing] = useState(false);
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
