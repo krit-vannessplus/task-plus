@@ -46,8 +46,8 @@ export function TaskWrapper({ taskId }: TaskWrapperProps) {
           <div className="space-y-4">
             <EditTaskCard
               taskId={taskId}
-              onCancel={() => setIsEditing(false)}
-              onSave={() => {
+              onCancelAction={() => setIsEditing(false)}
+              onSaveAction={() => {
                 setIsEditing(false);
                 // Optionally refresh the page or task data
               }}

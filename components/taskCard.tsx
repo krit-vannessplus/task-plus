@@ -27,16 +27,20 @@ export function TaskCard({ taskId }: TaskCardProps) {
     const fetchData = async () => {
       try {
         // Fetch task data
-        const taskResp = await axios.post("/api/tasks", {
-          action: "getTask",
-          payload: { TaskId: taskId },
+        const taskResp = await axios.get(GAS_URL, {
+          params: {
+            action: "getTask",
+            payload: JSON.stringify({ TaskId: taskId }),
+          },
         });
-
+        console.log("Fetched task:", taskResp.data); // For debugging
         setTask(taskResp.data);
 
         // Fetch users for names mapping
-        const usersResp = await axios.post("/api/tasks", {
-          action: "getUsers",
+        const usersResp = await axios.get(GAS_URL, {
+          params: {
+            action: "getUsers",
+          },
         });
 
         setUsers(Array.isArray(usersResp.data) ? usersResp.data : []);
@@ -50,10 +54,6 @@ export function TaskCard({ taskId }: TaskCardProps) {
 
     fetchData();
   }, [taskId]);
-
-  const getUserName = (userId: string) => {
-    return users.find((u) => u.UserId === userId)?.Name || "Unknown User";
-  };
 
   if (loading) {
     return (
@@ -88,19 +88,9 @@ export function TaskCard({ taskId }: TaskCardProps) {
         <CardTitle className="text-xl font-semibold">{task.Task}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Status Badge */}
+        {/* Status */}
         <div className="flex items-center gap-2">
-          <Badge
-            variant={
-              task.Status.toLowerCase() === "completed"
-                ? "destructive"
-                : task.Status.toLowerCase() === "in progress"
-                ? "secondary"
-                : "default"
-            }
-          >
-            {task.Status}
-          </Badge>
+          <span className="text-sm text-muted-foreground">Status: {task.Status}</span>
         </div>
 
         {/* Due Date */}
@@ -116,9 +106,9 @@ export function TaskCard({ taskId }: TaskCardProps) {
             <span className="text-sm font-medium">Assignees:</span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {task.Assignees.map((assigneeId) => (
-              <Badge key={assigneeId} variant="secondary">
-                {getUserName(assigneeId)}
+            {task.Assignees.map((name) => (
+              <Badge key={name} variant="secondary">
+                {name}
               </Badge>
             ))}
           </div>
@@ -131,9 +121,9 @@ export function TaskCard({ taskId }: TaskCardProps) {
             <span className="text-sm font-medium">Followers:</span>
           </div>
           <div className="flex flex-wrap gap-2">
-            {task.Followers.map((followerId) => (
-              <Badge key={followerId} variant="outline">
-                {getUserName(followerId)}
+            {task.Followers.map((name) => (
+              <Badge key={name} variant="outline">
+                {name}
               </Badge>
             ))}
           </div>

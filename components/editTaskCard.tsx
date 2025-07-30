@@ -29,11 +29,15 @@ const GAS_URL = process.env.NEXT_PUBLIC_GAS_URL!;
 
 interface EditTaskCardProps {
   taskId: string;
-  onCancel: () => void;
-  onSave: () => void;
+  onCancelAction: () => void;
+  onSaveAction: () => void;
 }
 
-export function EditTaskCard({ taskId, onCancel, onSave }: EditTaskCardProps) {
+export function EditTaskCard({
+  taskId,
+  onCancelAction,
+  onSaveAction,
+}: EditTaskCardProps) {
   const [task, setTask] = useState<Task | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,7 +92,7 @@ export function EditTaskCard({ taskId, onCancel, onSave }: EditTaskCardProps) {
           }),
         },
       });
-      onSave();
+      onSaveAction();
     } catch (err) {
       console.error("Error updating task:", err);
     } finally {
@@ -148,19 +152,12 @@ export function EditTaskCard({ taskId, onCancel, onSave }: EditTaskCardProps) {
         {/* Status */}
         <div className="space-y-2">
           <label className="text-sm font-medium">Status</label>
-          <Select
+          <Textarea
             value={task.Status}
-            onValueChange={(value) => setTask({ ...task, Status: value })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Not Started">Not Started</SelectItem>
-              <SelectItem value="In Progress">In Progress</SelectItem>
-              <SelectItem value="Completed">Completed</SelectItem>
-            </SelectContent>
-          </Select>
+            onChange={(e) => setTask({ ...task, Status: e.target.value })}
+            placeholder="Enter status"
+            className="min-h-[60px]"
+          />
         </div>
 
         {/* Due Date */}
@@ -210,26 +207,28 @@ export function EditTaskCard({ taskId, onCancel, onSave }: EditTaskCardProps) {
             </SelectTrigger>
             <SelectContent>
               {users.map((user) => (
-                <SelectItem key={user.UserId} value={user.UserId}>
+                <SelectItem key={user.Name} value={user.Name}>
                   {user.Name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <div className="flex flex-wrap gap-2 mt-2">
-            {task.Assignees.map((userId) => (
+            {task.Assignees.map((name) => (
               <Badge
-                key={userId}
+                key={name}
                 variant="secondary"
                 className="flex items-center gap-1"
               >
-                {users.find((u) => u.UserId === userId)?.Name}
-                <button
-                  onClick={() => removeAssignee(userId)}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
+                {name}
+                {task.Assignees.length > 1 && (
+                  <button
+                    onClick={() => removeAssignee(name)}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
               </Badge>
             ))}
           </div>
@@ -255,26 +254,28 @@ export function EditTaskCard({ taskId, onCancel, onSave }: EditTaskCardProps) {
             </SelectTrigger>
             <SelectContent>
               {users.map((user) => (
-                <SelectItem key={user.UserId} value={user.UserId}>
+                <SelectItem key={user.Name} value={user.Name}>
                   {user.Name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <div className="flex flex-wrap gap-2 mt-2">
-            {task.Followers.map((userId) => (
+            {task.Followers.map((name) => (
               <Badge
-                key={userId}
+                key={name}
                 variant="outline"
                 className="flex items-center gap-1"
               >
-                {users.find((u) => u.UserId === userId)?.Name}
-                <button
-                  onClick={() => removeFollower(userId)}
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
+                {name}
+                {task.Followers.length > 1 && (
+                  <button
+                    onClick={() => removeFollower(name)}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
               </Badge>
             ))}
           </div>
@@ -282,7 +283,7 @@ export function EditTaskCard({ taskId, onCancel, onSave }: EditTaskCardProps) {
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-2 sm:flex-row sm:justify-end pt-4">
-          <Button variant="outline" onClick={onCancel}>
+          <Button variant="outline" onClick={onCancelAction}>
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={updating}>

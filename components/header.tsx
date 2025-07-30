@@ -6,18 +6,20 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="bg-gray-800 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
+    <header className="bg-gray-800 text-white w-full fixed top-0 z-50 shadow-lg">
+      <div className="max-w-7xl mx-auto px-3 md:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 md:h-16">
+          <div className="flex items-center space-x-2">
             <Image
               src="/logo.jpg"
               alt="Logo"
-              width={40}
-              height={40}
-              className="rounded-full"
+              width={32}
+              height={32}
+              className="rounded-full md:w-10 md:h-10"
             />
-            <h1 className="ml-2 text-lg sm:text-xl font-bold">Task Tracker</h1>
+            <h1 className="text-base md:text-xl font-bold tracking-tight">
+              Task Tracker
+            </h1>
           </div>
 
           {/* Desktop menu */}
@@ -33,7 +35,7 @@ export default function Header() {
               </li>
               <li>
                 <a
-                  href="/listTasks"
+                  href="/task"
                   className="hover:underline px-3 py-2 rounded-md text-sm"
                 >
                   List Tasks
@@ -85,7 +87,7 @@ export default function Header() {
                 Create Task
               </a>
               <a
-                href="/listTasks"
+                href="/task"
                 className="block px-3 py-2 rounded-md text-base hover:bg-gray-700"
               >
                 List Tasks

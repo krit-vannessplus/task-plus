@@ -92,7 +92,7 @@ export function CreateTaskCard({ user }: CreateTaskCardProps) {
       setAssignees([]);
       setFollowers([user.UserId]);
       console.log("Task created successfully:", res.data);
-      router.push("/task?taskId=" + res.data.TaskCreated.TaskId); // Redirect to the created task
+      router.push("/task/" + res.data.TaskCreated.TaskId); // Redirect to the created task
     } catch (error) {
       console.error("Error creating task:", error);
     } finally {
