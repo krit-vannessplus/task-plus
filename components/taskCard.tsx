@@ -21,24 +21,24 @@ export function TaskCard({ taskId }: TaskCardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  console.log(`taskId in TaskCard: ${taskId}`); // Debugging line
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch task data
-        const taskResp = await axios.get(GAS_URL, {
-          params: {
-            action: "getTask",
-            payload: JSON.stringify({ TaskId: taskId }),
-          },
+        const taskResp = await axios.post("/api/tasks", {
+          action: "getTask",
+          payload: { TaskId: taskId },
         });
+
         setTask(taskResp.data);
 
         // Fetch users for names mapping
-        const usersResp = await axios.get(GAS_URL, {
-          params: {
-            action: "getUsers",
-          },
+        const usersResp = await axios.post("/api/tasks", {
+          action: "getUsers",
         });
+
         setUsers(Array.isArray(usersResp.data) ? usersResp.data : []);
       } catch (err) {
         setError("Failed to load task details");

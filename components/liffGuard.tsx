@@ -45,7 +45,7 @@ function LiffInit({ children }: { children: React.ReactNode }) {
           const pageParam = searchParams.get("page");
           const target =
             //pageParam === "createTask" ? "/createTask" : "/listTasks";
-            pageParam === "listTasks" ? "/listTasks" : "/createTask";
+            pageParam === "createTask" ? "/createTask" : "/task";
           router.replace(target);
         }
       } catch (err) {

@@ -22,6 +22,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import axios from "axios";
 import { User } from "./types";
+import { useRouter } from "next/navigation";
 
 const GAS_URL = process.env.NEXT_PUBLIC_GAS_URL!;
 
@@ -39,6 +40,7 @@ export function CreateTaskCard({ user }: CreateTaskCardProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [assigneeValue, setAssigneeValue] = useState<string>("");
   const [followerValue, setFollowerValue] = useState<string>("");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -89,6 +91,8 @@ export function CreateTaskCard({ user }: CreateTaskCardProps) {
       setDate(undefined);
       setAssignees([]);
       setFollowers([user.UserId]);
+      console.log("Task created successfully:", res.data);
+      router.push("/task?taskId=" + res.data.TaskCreated.TaskId); // Redirect to the created task
     } catch (error) {
       console.error("Error creating task:", error);
     } finally {
