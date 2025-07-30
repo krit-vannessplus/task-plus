@@ -97,7 +97,7 @@ export const columns: ColumnDef<Task>[] = [
           <Button
             variant="ghost"
             className="h-8 w-8 p-0"
-            onClick={() => router.push(`/task/${task.TaskId}`)}
+            onClick={() => router.push(`/task?taskId=${task.TaskId}`)}
           >
             <span className="sr-only">Open Task</span>
             <ExternalLink className="h-4 w-4" />

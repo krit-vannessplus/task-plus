@@ -43,9 +43,7 @@ function LiffInit({ children }: { children: React.ReactNode }) {
         // **Redirect logic**: only run when on the root `/` path
         if (pathname === "/") {
           const pageParam = searchParams.get("page");
-          const target =
-            //pageParam === "createTask" ? "/createTask" : "/listTasks";
-            pageParam === "createTask" ? "/createTask" : "/task";
+          const target = pageParam === "createTask" ? "/createTask" : "/task";
           router.replace(target);
         }
       } catch (err) {

@@ -15,6 +15,8 @@ export default async function getData(userId: string): Promise<Task[]> {
     const tasks = resp.data || [];
     tasks.forEach((task: Task) => {
       if (task.DueDate) {
+        console.log("Task DueDate:", new Date(task.DueDate));
+        console.log("Current Date:", new Date());
         task.isOverdue = new Date(task.DueDate) <= new Date();
       }
     });
