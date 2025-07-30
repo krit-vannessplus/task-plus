@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import axios from "axios";
 import { User } from "./types";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const GAS_URL = process.env.NEXT_PUBLIC_GAS_URL!;
 
@@ -40,10 +41,12 @@ export function CreateTaskCard({ user }: CreateTaskCardProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [assigneeValue, setAssigneeValue] = useState<string>("");
   const [followerValue, setFollowerValue] = useState<string>("");
+  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const fetchUsers = async () => {
+      setIsLoadingUsers(true);
       try {
         const resp = await axios.get(GAS_URL, {
           params: {
@@ -57,6 +60,8 @@ export function CreateTaskCard({ user }: CreateTaskCardProps) {
       } catch (error) {
         console.error("Error fetching users:", error);
         setUsers([]); // Set empty array on error
+      } finally {
+        setIsLoadingUsers(false);
       }
     };
 
@@ -103,29 +108,29 @@ export function CreateTaskCard({ user }: CreateTaskCardProps) {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Create New Task</CardTitle>
+        <CardTitle className="text-xl">Create New Task</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Task</label>
+          <label className="text-md font-medium">Task</label>
           <Textarea
             value={task}
             onChange={(e) => setTask(e.target.value)}
-            placeholder="Enter task description"
+            placeholder="Task description"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Status</label>
+          <label className="text-md font-medium">Status</label>
           <Textarea
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            placeholder="Enter status"
+            placeholder="Task status (Note)"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Due Date</label>
+          <label className="text-md font-medium">Due Date</label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -151,88 +156,111 @@ export function CreateTaskCard({ user }: CreateTaskCardProps) {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Assignees</label>
-          <Select
-            value={assigneeValue}
-            onValueChange={(value) => {
-              setAssignees([...assignees, value]);
-              setAssigneeValue(""); // Reset the select
-            }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select assignees" />
-            </SelectTrigger>
-            <SelectContent>
-              {users
-                .filter((u) => !assignees.includes(u.UserId))
-                .map((user) => (
-                  <SelectItem key={user.UserId} value={user.UserId}>
-                    {user.Name}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-          {/* Display selected assignees */}
-          <div className="flex flex-wrap gap-2 mt-2">
-            {assignees.map((userId) => (
-              <div key={userId} className="bg-secondary p-1 rounded-md">
-                {users.find((u) => u.UserId === userId)?.Name}
-                <button
-                  onClick={() =>
-                    setAssignees(assignees.filter((id) => id !== userId))
-                  }
-                  className="ml-2"
-                >
-                  ×
-                </button>
+          <label className="text-md font-medium">Assignees</label>
+          {isLoadingUsers ? (
+            <div className="space-y-2">
+              <Skeleton className="h-10 w-full" />
+              <div className="flex gap-2">
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-8 w-24" />
               </div>
-            ))}
-          </div>
+            </div>
+          ) : (
+            <>
+              <Select
+                value={assigneeValue}
+                onValueChange={(value) => {
+                  setAssignees([...assignees, value]);
+                  setAssigneeValue(""); // Reset the select
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select assignees" />
+                </SelectTrigger>
+                <SelectContent>
+                  {users
+                    .filter((u) => !assignees.includes(u.UserId))
+                    .map((user) => (
+                      <SelectItem key={user.UserId} value={user.UserId}>
+                        {user.Name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {assignees.map((userId) => (
+                  <div key={userId} className="bg-secondary p-1 rounded-md">
+                    {users.find((u) => u.UserId === userId)?.Name}
+                    <button
+                      onClick={() =>
+                        setAssignees(assignees.filter((id) => id !== userId))
+                      }
+                      className="ml-2"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Followers</label>
-          <Select
-            value={followerValue}
-            onValueChange={(value) => {
-              setFollowers([...followers, value]);
-              setFollowerValue(""); // Reset the select
-            }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select followers" />
-            </SelectTrigger>
-            <SelectContent>
-              {users
-                .filter((u) => !followers.includes(u.UserId))
-                .map((user) => (
-                  <SelectItem key={user.UserId} value={user.UserId}>
-                    {user.Name}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-          {/* Display selected followers */}
-          <div className="flex flex-wrap gap-2 mt-2">
-            {followers.map((userId) => (
-              <div key={userId} className="bg-secondary p-1 rounded-md">
-                {users.find((u) => u.UserId === userId)?.Name}
-                {userId !== user.UserId && (
-                  <button
-                    onClick={() => {
-                      if (userId !== user.UserId) {
-                        // Prevent removing current user
-                        setFollowers(followers.filter((id) => id !== userId));
-                      }
-                    }}
-                    className="ml-2"
-                  >
-                    ×
-                  </button>
-                )}
+          <label className="text-md font-medium">Followers</label>
+          {isLoadingUsers ? (
+            <div className="space-y-2">
+              <Skeleton className="h-10 w-full" />
+              <div className="flex gap-2">
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-8 w-24" />
               </div>
-            ))}
-          </div>
+            </div>
+          ) : (
+            <>
+              <Select
+                value={followerValue}
+                onValueChange={(value) => {
+                  setFollowers([...followers, value]);
+                  setFollowerValue(""); // Reset the select
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select followers" />
+                </SelectTrigger>
+                <SelectContent>
+                  {users
+                    .filter((u) => !followers.includes(u.UserId))
+                    .map((user) => (
+                      <SelectItem key={user.UserId} value={user.UserId}>
+                        {user.Name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {followers.map((userId) => (
+                  <div key={userId} className="bg-secondary p-1 rounded-md">
+                    {users.find((u) => u.UserId === userId)?.Name}
+                    {userId !== user.UserId && (
+                      <button
+                        onClick={() => {
+                          if (userId !== user.UserId) {
+                            setFollowers(
+                              followers.filter((id) => id !== userId)
+                            );
+                          }
+                        }}
+                        className="ml-2"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         <Button

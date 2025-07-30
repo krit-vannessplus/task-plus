@@ -28,55 +28,43 @@ import { Skeleton } from "@/components/ui/skeleton";
 const GAS_URL = process.env.NEXT_PUBLIC_GAS_URL!;
 
 interface EditTaskCardProps {
-  taskId: string;
+  task: Task;
   onCancelAction: () => void;
   onSaveAction: () => void;
 }
 
 export function EditTaskCard({
-  taskId,
+  task: initialTask,
   onCancelAction,
   onSaveAction,
 }: EditTaskCardProps) {
-  const [task, setTask] = useState<Task | null>(null);
+  const [task, setTask] = useState<Task>(initialTask);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Date>(new Date(initialTask.DueDate));
   const [assigneeValue, setAssigneeValue] = useState<string>("");
   const [followerValue, setFollowerValue] = useState<string>("");
 
-  // Fetch initial data
+  // Fetch users data
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUsers = async () => {
       try {
-        // Fetch task and users in parallel
-        const [taskResp, usersResp] = await Promise.all([
-          axios.get(GAS_URL, {
-            params: {
-              action: "getTask",
-              payload: JSON.stringify({ TaskId: taskId }),
-            },
-          }),
-          axios.get(GAS_URL, {
-            params: {
-              action: "getUsers",
-            },
-          }),
-        ]);
-
-        setTask(taskResp.data);
-        setDate(new Date(taskResp.data.DueDate));
+        const usersResp = await axios.get(GAS_URL, {
+          params: {
+            action: "getUsers",
+          },
+        });
         setUsers(Array.isArray(usersResp.data) ? usersResp.data : []);
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Error fetching users:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [taskId]);
+    fetchUsers();
+  }, []);
 
   const handleSubmit = async () => {
     if (!task || !date) return;
@@ -101,7 +89,6 @@ export function EditTaskCard({
   };
 
   const removeAssignee = (userId: string) => {
-    if (!task) return;
     setTask({
       ...task,
       Assignees: task.Assignees.filter((id) => id !== userId),
@@ -109,7 +96,6 @@ export function EditTaskCard({
   };
 
   const removeFollower = (userId: string) => {
-    if (!task) return;
     setTask({
       ...task,
       Followers: task.Followers.filter((id) => id !== userId),
@@ -127,10 +113,6 @@ export function EditTaskCard({
         </CardContent>
       </Card>
     );
-  }
-
-  if (!task) {
-    return <div className="text-red-500">Failed to load task</div>;
   }
 
   return (
@@ -179,6 +161,7 @@ export function EditTaskCard({
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
+                required={true}
                 selected={date}
                 onSelect={setDate}
                 initialFocus

@@ -31,10 +31,18 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* Wrap all pages in your LIFF guard */}
-        <div className="min-h-screen flex flex-col bg-gray-100 space-y-4 pb-4">
-          <Header /> {/* Include the header component */}
-          <Suspense fallback={<div>Loading...</div>}>
-            <LiffGuard>{children}</LiffGuard>
+        <div className="min-h-screen flex flex-col bg-gray-100">
+          <Header />
+          <Suspense
+            fallback={
+              <div className="flex-1 flex items-center justify-center">
+                Loading...
+              </div>
+            }
+          >
+            <LiffGuard>
+              <main className="flex-1 flex flex-col">{children}</main>
+            </LiffGuard>
           </Suspense>
         </div>
       </body>
