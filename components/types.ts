@@ -6,6 +6,7 @@ export interface Task {
   Assignees: string[];
   Followers: string[];
   UpdatedAt: string;
+  isOverdue?: boolean;
 }
 
 export interface User {

@@ -10,11 +10,16 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Task } from "@/components/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { use } from "react";
 
 const GAS_URL = process.env.NEXT_PUBLIC_GAS_URL!;
 
-export default function TaskPage({ params }: { params: { taskId: string } }) {
-  const { taskId } = params;
+export default function TaskPage({
+  params,
+}: {
+  params: Promise<{ taskId: string }>;
+}) {
+  const { taskId } = use(params);
   const [isEditing, setIsEditing] = useState(false);
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);

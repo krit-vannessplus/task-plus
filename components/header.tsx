@@ -14,9 +14,10 @@ export default function Header() {
             <Image
               src="/logo.jpg"
               alt="Logo"
-              width={32}
-              height={32}
-              className="rounded-full md:w-10 md:h-10"
+              width={60}
+              height={60}
+              className="rounded-sm"
+              style={{ objectFit: "contain" }}
             />
             <h1 className="text-base md:text-xl font-bold tracking-tight">
               Task Tracker
@@ -78,7 +79,11 @@ export default function Header() {
         </div>
 
         {/* Mobile menu */}
-        <div className={`sm:hidden transition-all duration-200 ${isMenuOpen ? 'max-h-40' : 'max-h-0'} overflow-hidden`}>
+        <div
+          className={`sm:hidden transition-all duration-200 ${
+            isMenuOpen ? "max-h-40" : "max-h-0"
+          } overflow-hidden`}
+        >
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link
               href="/createTask"

@@ -106,7 +106,7 @@ export function CreateTaskCard({ user }: CreateTaskCardProps) {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto ">
       <CardHeader>
         <CardTitle className="text-xl">Create New Task</CardTitle>
       </CardHeader>
