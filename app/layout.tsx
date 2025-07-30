@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Your App Title",
-  description: "Your app description",
+  title: "Task Tracker",
+  description: "Vanness Plus Consulting Task Tracker",
 };
 
 export default function RootLayout({
