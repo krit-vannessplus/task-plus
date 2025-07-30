@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Header() {
@@ -26,20 +27,20 @@ export default function Header() {
           <nav className="hidden sm:block">
             <ul className="flex space-x-4">
               <li>
-                <a
+                <Link
                   href="/createTask"
                   className="hover:underline px-3 py-2 rounded-md text-sm"
                 >
                   Create Task
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/task"
                   className="hover:underline px-3 py-2 rounded-md text-sm"
                 >
                   List Tasks
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>
@@ -80,18 +81,18 @@ export default function Header() {
         {isMenuOpen && (
           <div className="sm:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <a
+              <Link
                 href="/createTask"
                 className="block px-3 py-2 rounded-md text-base hover:bg-gray-700"
               >
                 Create Task
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/task"
                 className="block px-3 py-2 rounded-md text-base hover:bg-gray-700"
               >
                 List Tasks
-              </a>
+              </Link>
             </div>
           </div>
         )}

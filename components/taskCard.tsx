@@ -17,7 +17,6 @@ interface TaskCardProps {
 
 export function TaskCard({ taskId }: TaskCardProps) {
   const [task, setTask] = useState<Task | null>(null);
-  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,15 +34,6 @@ export function TaskCard({ taskId }: TaskCardProps) {
         });
         console.log("Fetched task:", taskResp.data); // For debugging
         setTask(taskResp.data);
-
-        // Fetch users for names mapping
-        const usersResp = await axios.get(GAS_URL, {
-          params: {
-            action: "getUsers",
-          },
-        });
-
-        setUsers(Array.isArray(usersResp.data) ? usersResp.data : []);
       } catch (err) {
         setError("Failed to load task details");
         console.error("Error fetching task:", err);
@@ -90,7 +80,9 @@ export function TaskCard({ taskId }: TaskCardProps) {
       <CardContent className="space-y-4">
         {/* Status */}
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Status: {task.Status}</span>
+          <span className="text-sm text-muted-foreground">
+            Status: {task.Status}
+          </span>
         </div>
 
         {/* Due Date */}
