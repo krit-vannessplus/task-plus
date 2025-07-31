@@ -52,6 +52,7 @@ import { UserFilter } from "@/components/userFilter";
 import { Task } from "./types";
 
 interface DataTableProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<Task, any>[];
   data: Task[];
   isLoading: boolean;

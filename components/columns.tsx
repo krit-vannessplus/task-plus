@@ -6,6 +6,26 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, ArrowUpDown } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Row } from "@tanstack/react-table";
+
+// ✅ Create a new component for the actions cell
+const ActionsCell = ({ row }: { row: Row<Task> }) => {
+  const router = useRouter(); // Hook is now called inside a React component
+  const task = row.original;
+
+  return (
+    <div className="text-center">
+      <Button
+        variant="ghost"
+        className="h-8 w-8 p-0"
+        onClick={() => router.push(`/task?taskId=${task.TaskId}`)}
+      >
+        <span className="sr-only">Open Task</span>
+        <ExternalLink className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+};
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -89,21 +109,7 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const router = useRouter();
-      const task = row.original;
-      return (
-        <div className="text-center">
-          <Button
-            variant="ghost"
-            className="h-8 w-8 p-0"
-            onClick={() => router.push(`/task?taskId=${task.TaskId}`)}
-          >
-            <span className="sr-only">Open Task</span>
-            <ExternalLink className="h-4 w-4" />
-          </Button>
-        </div>
-      );
-    },
+    // ✅ Use the new component in the cell renderer
+    cell: ({ row }) => <ActionsCell row={row} />,
   },
 ];
